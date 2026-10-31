@@ -1,0 +1,12 @@
+{
+  "name": "solo-smith",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Browser-local guitar solo generator: key and scale in, playable tab, Guitar Pro, MIDI and WAV out",
+  "scripts": {
+    "test": "node tests/engine.test.mjs",
+    "test:browser": "node tests/browser.test.cjs",
+    "samples": "node scripts/build-samples.mjs"
+  }
+}

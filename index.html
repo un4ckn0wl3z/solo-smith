@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#121310">
+<title>Solo Smith — Guitar Solo Generator</title>
+<meta name="description" content="Generate playable guitar solos in the key of your backing track: pentatonic, blues, modes and more. Tab, preview with a backing band, and export Guitar Pro, MIDI and WAV — all in your browser.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+ <a class="brand" href="./"><span class="brand-icon">♪</span> SOLO SMITH<span class="beta">BETA</span></a>
+ <div class="header-right"><span class="dot"></span> <span class="hide-sm">LOCAL PROCESSING</span>
+  <div class="lang" role="group" aria-label="Language" data-noi18n><button type="button" data-lang="th" aria-pressed="true">TH</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  <button id="helpBtn" class="icon-btn" type="button" aria-label="วิธีใช้">?</button>
+ </div>
+</header>
+<main>
+ <div class="eyebrow">KEY → SCALE → SOLO / GUITAR PRO · MIDI · WAV</div>
+ <div class="hero"><div><h1>Your key.<br><span>Forged into a solo.</span></h1><p>บอก key ของ backing track เลือกสเกลและสไตล์ แล้วรับโซโลที่เล่นได้จริงบนคอกีตาร์<br class="desktop"> มีหลายเวอร์ชันให้เทียบ ฟังพร้อมวงดนตรี ดู tab และส่งออกไปเล่นต่อ</p></div>
+  <div class="hero-art" aria-hidden="true"><div class="fretboard"><i></i><i></i><i></i><i></i><i></i><i></i><b style="--s:1;--f:2"></b><b style="--s:2;--f:4"></b><b style="--s:3;--f:3"></b><b style="--s:4;--f:5"></b><b style="--s:2;--f:6"></b><b style="--s:1;--f:7"></b></div><span>BUILT FOR<br>BIG SOLOS.</span></div></div>
+ <div class="workflow"><span class="active">01 <b>SET THE KEY</b></span><i></i><span>02 <b>SHAPE THE SOLO</b></span><i></i><span>03 <b>PLAY & EXPORT</b></span></div>
+ <div class="workspace">
+  <aside>
+   <section class="panel" aria-labelledby="h1t">
+    <div class="section-title"><h2 id="h1t"><em>01</em> Backing track</h2><span class="tag">KEY</span></div>
+    <div class="row2"><label class="field">Key<select id="root"></select></label><label class="field">Quality<select id="quality"><option value="minor">Minor</option><option value="major">Major</option></select></label></div>
+    <label class="field">Scale<select id="scale"></select></label>
+    <p class="small" id="scaleHint"></p>
+    <div class="row3"><label class="field">BPM<input id="bpm" type="number" min="40" max="260" step="1" inputmode="numeric"></label><label class="field">Time<span class="ts"><select id="num" aria-label="จำนวนจังหวะต่อห้อง"></select><i>/</i><select id="den" aria-label="ตัวล่าง"><option>4</option><option>8</option></select></span></label><label class="field">Bars<select id="bars"></select></label></div>
+    <label class="field">Chords <span class="opt">(ไม่บังคับ)</span><input id="chords" type="text" autocomplete="off" spellcheck="false" placeholder="เช่น Am | F | C | G"></label>
+    <div class="chord-actions"><button id="suggest" class="text-btn" type="button">✳ แนะนำคอร์ดตาม key</button><button id="clearChords" class="text-btn" type="button">ล้าง</button></div>
+    <p class="small">ใส่ 1 คอร์ดต่อห้อง คั่นด้วย | ใส่ 2 คอร์ดในห้องเดียวได้ (เช่น F G) ถ้าใส่น้อยกว่าจำนวนห้องจะวนซ้ำ ถ้าใส่คอร์ด โน้ตจังหวะหนักจะลงโน้ตในคอร์ด</p>
+    <div id="chordBars" class="chord-bars" aria-live="polite"></div>
+   </section>
+   <section class="panel note-panel"><span class="note-symbol">✦</span><div><strong>วิธีที่โซโลถูกสร้าง</strong><p>สร้างทีละวลีแบบถาม-ตอบ ใช้ motif ซ้ำ จบวลีที่โน้ตเป้าหมาย และอยู่ในตำแหน่งนิ้วที่เล่นได้จริง ไม่ใช้ AI ทุกอย่างทำงานในเบราว์เซอร์</p></div></section>
+  </aside>
+  <div class="main-column">
+   <section class="panel settings" aria-labelledby="h2t">
+    <div class="section-title"><h2 id="h2t"><em>02</em> Shape the solo</h2><button id="resetBtn" class="text-btn" type="button">↺ คืนค่าเริ่มต้น</button></div>
+    <label class="field-label">STYLE</label>
+    <div class="styles" id="styles"></div>
+    <div class="control-grid">
+     <label class="range-field"><span>Difficulty <b id="difficultyValue">50%</b></span><input id="difficulty" type="range" min="0" max="100" step="5"><small>ความเร็วสูงสุด เทคนิค และการย้ายตำแหน่ง</small></label>
+     <label class="range-field"><span>Note density <b id="densityValue">50%</b></span><input id="density" type="range" min="0" max="100" step="5"><small>จำนวนโน้ต น้อย = เว้นช่องหายใจ มาก = วิ่งโน้ต</small></label>
+    </div>
+    <div class="options">
+     <label class="field">Tuning<select id="tuning"></select></label>
+     <label class="field">Fingering<select id="fingering"><option value="box">Box (scale shape)</option><option value="3nps">3 notes per string</option></select></label>
+     <label class="field">Position<select id="move"><option value="auto">Move along the neck</option><option value="fixed">Stay in one position</option></select></label>
+    </div>
+    <div class="options">
+     <label class="field">Start near fret<input id="start" type="number" min="0" max="20" step="1" inputmode="numeric"></label>
+     <label class="field">Fret range<span class="ts"><input id="lo" type="number" min="0" max="20" step="1" inputmode="numeric" aria-label="เฟรตต่ำสุด"><i>–</i><input id="hi" type="number" min="4" max="24" step="1" inputmode="numeric" aria-label="เฟรตสูงสุด"></span></label>
+     <label class="field">Takes<select id="takeCountSel"><option value="2">2 takes</option><option value="3">3 takes</option><option value="4">4 takes</option></select></label>
+    </div>
+    <div class="generate-row"><p class="small" id="positionHint"></p><button id="generate" class="primary" type="button">✳ Generate solo <span>↗</span></button></div>
+   </section>
+   <section class="panel results" aria-labelledby="h3t">
+    <div class="section-title"><h2 id="h3t"><em>03</em> Play &amp; export</h2><span class="count" id="takeCount">0</span></div>
+    <div id="empty" class="empty"><div class="empty-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>ยังไม่มีโซโล</h3><p>ตั้ง key และสไตล์ แล้วกด Generate solo</p></div>
+    <div id="result" hidden>
+     <div class="takes" id="takeTabs" role="tablist" aria-label="Takes"></div>
+     <div class="transport-row">
+      <button id="play" class="play-btn" type="button" aria-label="เล่น">▶</button>
+      <div class="transport-info"><strong id="takeTitle"></strong><small id="takeStats"></small><div class="transport"><span id="progress"></span></div></div>
+     </div>
+     <div class="mix">
+      <label><input type="checkbox" id="mLead" checked> Solo</label><label><input type="checkbox" id="mDrums" checked> Drums</label><label><input type="checkbox" id="mBass" checked> Bass</label><label><input type="checkbox" id="mKeys" checked> Keys</label><label><input type="checkbox" id="mClick"> Click</label><label><input type="checkbox" id="mCount"> Count-in</label><label><input type="checkbox" id="mLoop"> Loop</label>
+     </div>
+     <div class="phrases" id="phrases" aria-label="Phrases"></div>
+     <div class="tab-tools"><span class="legend"><i></i> โน้ตในคอร์ด</span><label class="toggle-label"><input id="notation" type="checkbox"><span class="switch"></span>Notation + tab</label></div>
+     <div class="tab-wrap" data-noi18n><div id="tab" aria-label="Tablature"></div></div>
+     <div class="export">
+      <label class="field">Export<select id="exportPart"><option value="all">Solo + backing</option><option value="solo">Solo only</option><option value="backing">Backing only (ไว้ซ้อมด้นสด)</option></select></label>
+      <button class="download" id="dlGp" type="button">Guitar Pro ↓</button><button class="download" id="dlMidi" type="button">MIDI ↓</button><button class="download" id="dlWav" type="button">WAV ↓</button>
+     </div>
+     <p class="small">Guitar Pro มีเฉพาะแทร็กโซโล (พร้อมชื่อคอร์ด) ส่วน MIDI และ WAV เลือกได้ว่าจะเอาวงด้วยหรือไม่</p>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+   </section>
+  </div>
+ </div>
+ <footer><span>SOLO SMITH <b>/</b> PART OF <a href="https://github.com/un4ckn0wl3z/unknown-guitar-toolkits">UNKNOWN GUITAR TOOLKITS</a></span><span>TAB BY <a href="https://alphatab.net">ALPHATAB</a> · SOUNDS: SONIVOX EAS · <a href="https://github.com/un4ckn0wl3z/solo-smith">SOURCE</a></span></footer>
+</main>
+<dialog id="help"><button class="icon-btn close" id="closeHelp" type="button" aria-label="ปิด">×</button><h2>วิธีใช้ Solo Smith</h2><ol>
+ <li><b>ตั้ง key</b> ของ backing track เลือกสเกล (pentatonic, blues, mode ต่างๆ) ใส่ BPM, จังหวะ และจำนวนห้อง</li>
+ <li><b>ใส่คอร์ด</b> (ไม่บังคับ) เช่น Am | F | C | G โซโลจะลงโน้ตในคอร์ดบนจังหวะหนัก ทำให้ฟังเข้ากับเพลง</li>
+ <li><b>เลือกสไตล์</b> ความยาก และความหนาแน่นของโน้ต Box คือรูปสเกลในช่วง 4–5 เฟรต ส่วน 3 notes per string เหมาะกับการวิ่งโน้ตเร็ว</li>
+ <li><b>กด Generate</b> จะได้หลาย take ฟังพร้อมกลอง เบส และคีย์บอร์ด กด ↻ ที่วลีเพื่อสร้างใหม่เฉพาะวลีนั้น</li>
+ <li><b>ส่งออก</b> เป็น Guitar Pro (เปิดต่อใน Guitar Pro, TuxGuitar, MuseScore หรือส่งให้ Riff Forge), MIDI หรือ WAV เลือก Backing only เพื่อเอาวงไปซ้อมด้นสดเอง</li>
+</ol><p>ตัวเลขสีเขียวใน tab คือโน้ตในคอร์ด ณ จังหวะนั้น</p></dialog>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
