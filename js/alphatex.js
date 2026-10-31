@@ -5,7 +5,7 @@ const DUR={160:'16',240:'16',320:'8',480:'8',720:'8',960:'4',1440:'4',1920:'2',2
 const DOT=new Set([720,1440,2880]);
 const esc=s=>String(s).replace(/["\\]/g,'');
 export function toAlphaTex(solo){const o=solo.options,flats=usesFlats(o.root,o.quality),key=pcName(o.root,flats)+' '+SCALES[o.scale].name;
- const lines=[`\\title "${esc(key)} solo"`,`\\subtitle "Solo Smith · ${esc(STYLES[o.style].name)} · take ${solo.take+1}"`,`\\tempo ${Math.round(o.bpm)}`,`\\track "Lead guitar"`,`\\staff {tabs}`,`\\tuning (${solo.tuning.map(pitchName).join(' ')})`];
+ const lines=[`\\title "${esc(key)} solo"`,`\\subtitle "Solo Smith · ${esc(STYLES[o.style].name)} · take ${solo.take+1}"`,`\\tempo ${Math.round(o.bpm)}`,`\\track "Lead guitar" "Lead"`,`\\staff {tabs}`,`\\tuning (${solo.tuning.map(pitchName).join(' ')})`];
  const bars=solo.bars.map((bar,bi)=>{const parts=[];if(bi===0)parts.push(`\\ts (${o.num} ${o.den})`);let chordAt=new Map();(bar.chords||[]).forEach((c,i)=>chordAt.set(i*solo.barTicks/2,c.name));
   // A chord that changes at the half bar needs a beat starting there; split a long note or rest if necessary.
   const beats=[];for(const e of bar.beats){const half=solo.barTicks/2;if(chordAt.has(half)&&e.tick<half&&e.tick+e.dur>half&&!e.tuplet){const a=half-e.tick,b=e.dur-a;if(DUR[a]&&DUR[b]){beats.push({...e,dur:a,note:e.note&&{...e.note,vibrato:false,slide:false,legato:false}});beats.push({...e,tick:half,dur:b,tie:!e.rest});continue}}beats.push(e)}
