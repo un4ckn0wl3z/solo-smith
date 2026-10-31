@@ -19,13 +19,14 @@ Part of [Unknown Guitar Toolkits](https://github.com/un4ckn0wl3z/unknown-guitar-
 
 ## How a solo is built
 
-Rule-based and seeded, not AI:
+Rule-based and seeded, not AI. It works the way a guitarist phrases:
 
-1. The solo is split into two-bar phrases that alternate **call** and **response**. Each pair shares a rhythm motif (one-beat cells: quarters, eighths, sixteenth groupings, triplets, sextuplets for shred) and a melodic contour.
-2. Each phrase walks the notes of its fingering position along the contour, staying mostly on the upper strings. Downbeats and strong beats move to the nearest **chord tone** (or the tonic triad without chords). Blue notes are used only in passing.
-3. Calls end on a chord tone that is not the root; responses resolve to the chord root, and the last phrase ends on the key root with vibrato. Phrases end with a breath.
-4. Techniques are added where a guitarist would use them: bends from a scale note a whole or half step below (a minor third in blues) on the top three strings, never two in a row; hammer-ons and pull-offs between close frets on one string; slides on wider moves; vibrato on long notes.
-5. Blues uses triplet feel (written in the Guitar Pro file, swung in playback and MIDI).
+1. The solo is split into two-bar phrases that alternate **call** and **response**, with a breath after each.
+2. A phrase is made of **gestures**: a run of even notes — one subdivision per run (eighths, sixteenths, triplets, sextuplets for shred, quarters for melodic) — that moves **step by step into a landing note on a beat**, which is then held. Run shapes include descending and ascending runs, arches, enclosures around the target, blues two-note "worrying", and sequences in fours for shred.
+3. Landings are placed on strong beats and are always **chord tones** (or the tonic triad without chords). Across a phrase they trace an arc; the solo climbs for its last phrases. Calls end on a chord tone that is not the root, responses resolve to the chord root, and the solo ends on the key root.
+4. Each call/response pair opens with the **same gesture** (subdivision, length and shape), so the answer echoes the question; later gestures often reuse the phrase's rhythm.
+5. Techniques go where a guitarist would put them: bends into landing notes from a scale note a whole or half step below (a minor third in blues) on the top three strings, never two in a row; hammer-ons and pull-offs inside runs on one string; slides on wider moves; vibrato on held notes. Long notes tie over the bar line.
+6. Blues uses triplet feel (written in the Guitar Pro file, swung in playback and MIDI).
 
 Each phrase has its own random stream, so re-rolling one phrase never changes the others.
 

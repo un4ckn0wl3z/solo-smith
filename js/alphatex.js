@@ -20,6 +20,6 @@ export function toAlphaTex(solo){const o=solo.options,flats=usesFlats(o.root,o.q
 // Parse the tex into an alphaTab score; triplet feel for shuffle; chord tones coloured on the tab.
 export function toScore(at,solo,{color='#3d7a0c'}={}){const score=at.importer.ScoreLoader.loadAlphaTex(toAlphaTex(solo));
  if(solo.swing)for(const m of score.masterBars)m.tripletFeel=at.model.TripletFeel.Triplet8th;
- const staff=score.tracks[0].staves[0],flat=[];for(const bar of solo.bars)for(const e of bar.beats)if(!e.rest)flat.push(e);let k=0;
+ const staff=score.tracks[0].staves[0],flat=[];for(const bar of solo.bars)for(const e of bar.beats)if(!e.rest&&!e.tie)flat.push(e);let k=0;
  if(color&&at.model.NoteStyle)for(const bar of staff.bars)for(const beat of bar.voices[0].beats){if(beat.isRest)continue;for(const note of beat.notes){if(note.isTieDestination)continue;const e=flat[k++];if(e?.note?.chordTone){note.style=new at.model.NoteStyle();note.style.colors.set(at.model.NoteSubElement.GuitarTabFretNumber,at.model.Color.fromJson(color))}}}
  return score}

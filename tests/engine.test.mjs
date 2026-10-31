@@ -31,10 +31,10 @@ for(const style of Object.keys(STYLES))for(const scale of['minorPent','blues','d
   assert.ok(pcs.includes(n.pitch%12),'in scale');if(n.bend)assert.ok(pcs.includes(n.target%12)&&n.target===n.pitch+n.bend&&n.string<=3);assert.equal(tun[n.string-1]+n.fret,n.pitch);assert.ok(n.fret>=o.lo&&n.fret<=o.hi);
   const ph=s.phrases.find(p=>bar.index>=p.from&&bar.index<=p.to),pos=s.shapes[ph.position];assert.ok(n.fret>=pos.min-1&&n.fret<=pos.max+1,'stays in position');
   for(const k of['bend','legato','slide','vibrato'])if(n[k])stats[k]++;if(e.tuplet===6)stats.x6++;if(e.tuplet===3)stats.t3++;
-  if(e.tick===0&&o.chords){const c=chordAt(s,bar.index,0);strongHits[0]++;if(c.pcs.includes((n.target??n.pitch)%12))strongHits[1]++}}}
+  if(e.tick===0&&o.chords&&!e.tie){const c=chordAt(s,bar.index,0);strongHits[0]++;if(c.pcs.includes((n.target??n.pitch)%12))strongHits[1]++}}}
  // phrase endings: responses resolve to the chord root (the last phrase to the key root) with vibrato
- for(const p of s.phrases){const notes=s.bars.slice(p.from,p.to+1).flatMap(b=>b.beats.filter(e=>!e.rest).map(e=>({...e,bar:b.index})));const last=notes[notes.length-1];if(!last)continue;const pc=(last.note.target??last.note.pitch)%12;
-  if(p.last)assert.equal(pc,o.root,'solo ends on the key root');else if(p.role==='response'){const c=chordAt(s,last.bar,last.tick);assert.equal(pc,c?c.root:o.root,'response resolves')}}
+ for(const p of s.phrases){const notes=s.bars.slice(p.from,p.to+1).flatMap(b=>b.beats.filter(e=>!e.rest&&!e.tie).map(e=>({...e,bar:b.index})));const last=notes[notes.length-1];if(!last)continue;const pc=(last.note.target??last.note.pitch)%12;
+  if(p.last)assert.equal(pc,o.root,'solo ends on the key root');else if(p.role==='response'){const c=chordAt(s,last.bar,last.tick),root=c?c.root:o.root;if(pcs.includes(root))assert.equal(pc,root,'response resolves');else assert.ok(c.pcs.includes(pc),'chord root outside the scale: land on another chord tone')}}
  checked++}
 assert.ok(strongHits[1]/strongHits[0]>.75,'downbeats land on chord tones: '+strongHits);
 for(const k of['bend','legato','slide','vibrato','t3'])assert.ok(stats[k]>10,k+' '+stats[k]);
